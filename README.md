@@ -10,7 +10,7 @@ code to see both the attack and the defense clearly.
 This is the adversarial turn in a series. The earlier repos teach you to *build*
 LLM apps — the [OpenAI](https://github.com/Ailuue/openai-api-deep-dive) and [Claude](https://github.com/Ailuue/claude-api-deep-dive)
 APIs, [prompt engineering](https://github.com/Ailuue/prompt-engineering-deep-dive), [RAG](https://github.com/Ailuue/rag-deep-dive), [evals](https://github.com/Ailuue/evals-deep-dive), and
-[agents](https://github.com/Ailuue/agents-deep-dive) — and the last one, [production](https://github.com/Ailuue/production-deep-dive),
+[agents](https://github.com/Ailuue/agents-deep-dive) — and the last one, [production](https://github.com/Ailuue/ai-in-production-deep-dive),
 puts the defenses you build here on a live request path. This one tries to *break* apps and then harden them:
 injection is the canonical attack on RAG (a poisoned document) and on agents (a
 tool result that says "now delete everything"), and you measure your defenses the
@@ -153,7 +153,7 @@ never zeroes it.
 > 💡 **Same filter, different target: PII.** The input-inspection pattern here —
 > scan what comes in, decide whether to forward it — is exactly how you keep
 > personal data from leaking *upstream* to the provider, not just how you catch
-> attacks. The [Production repo](https://github.com/Ailuue/production-deep-dive)
+> attacks. The [Production repo](https://github.com/Ailuue/ai-in-production-deep-dive)
 > puts both on one request path and adds the other two PII touchpoints (redact on
 > the way out, keep it out of your logs).
 
@@ -288,7 +288,7 @@ like any other service:
 These shortcuts are right for learning and wrong for production. All seven
 concerns — observability, cost, reliability, caching, guardrails, prompt
 versioning, and eval gates — are built from scratch and wired into one running
-app in **[Production](https://github.com/Ailuue/production-deep-dive)** (#8 in the
+app in **[Production](https://github.com/Ailuue/ai-in-production-deep-dive)** (#8 in the
 series), where the guardrails you built here sit on a live request path. It runs
 **offline on a mock provider**, so you can see the whole ops machinery with no key
 and no cost.
@@ -356,6 +356,6 @@ this sequence builds naturally:
 5. [Evals](https://github.com/Ailuue/evals-deep-dive) — measure whether a change actually helps
 6. [Agents](https://github.com/Ailuue/agents-deep-dive) — give a model tools and a loop so it can act
 7. [Prompt Injection & Guardrails](https://github.com/Ailuue/prompt-injection-deep-dive) — attack and defend all of the above
-8. [Production](https://github.com/Ailuue/production-deep-dive) — operate one app end to end: observability, cost, reliability, caching, guardrails, prompt versioning, eval gates
+8. [Production](https://github.com/Ailuue/ai-in-production-deep-dive) — operate one app end to end: observability, cost, reliability, caching, guardrails, prompt versioning, eval gates
 
 **You are here: #7 — Prompt Injection & Guardrails.**
