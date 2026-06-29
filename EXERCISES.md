@@ -174,6 +174,34 @@ found a gap — which defense would you add or strengthen to close it?
 
 ---
 
+## Going further — two more guardrail layers
+
+**Recall (exfiltration, `10`).** The secret is never printed to the user, yet it
+leaks. How — and why does the defense check the *channel* rather than just scanning
+for the secret?
+
+<details><summary>▸ Answer</summary>
+
+The model emits a markdown image/link whose **URL contains the secret**; a rendering
+client auto-fetches it, sending the data to the attacker. You check the channel
+(markdown images/links to non-allowlisted domains) because the payload may be
+**encoded or split** — so a plain "does the output contain the secret?" scan misses
+it, but "is the model building a beacon to a domain we don't control?" catches it.
+</details>
+
+**Recall (moderation, `11`).** How is content moderation a *different* guardrail from
+injection detection, and why run it on both input and output?
+
+<details><summary>▸ Answer</summary>
+
+Injection detection asks "is the model being **hijacked**?"; moderation asks "is this
+content **harmful** (hate/violence/sexual/self-harm)?" — independent concerns. You
+moderate **input** to refuse abusive requests before processing, and **output** so
+the app never emits harmful content even if a jailbreak or hallucination produced it.
+</details>
+
+---
+
 ### Where to take it next
 
 Invent your own attacks against your own systems (only your own — this is
