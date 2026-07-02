@@ -43,8 +43,14 @@ for benign in g.BENIGN:
     print(f"  {('YES' if flagged else 'no'):>7}  (benign) {benign[:40]}...{note}")
 
 print("\n\n=== Output checks on sample leaks (offline) ===")
-for sample in [f"The code is {g.SECRET}.", "B L U E - M O O N - 4 2", "Your support hours are 9-5."]:
-    print(f"  contains_secret={g.contains_secret(sample, g.SECRET)!s:>5}  for  {sample!r}")
+for sample in [
+    f"The code is {g.SECRET}.",
+    "B L U E - M O O N - 4 2",
+    "Your support hours are 9-5.",
+]:
+    print(
+        f"  contains_secret={g.contains_secret(sample, g.SECRET)!s:>5}  for  {sample!r}"
+    )
 
 print(
     "\nTakeaway: keyword filtering misses the obfuscated attack and trips on a "
