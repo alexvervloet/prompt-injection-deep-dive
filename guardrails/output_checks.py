@@ -14,6 +14,10 @@ These checks are pure, offline functions:
   - find_pii:                    are there emails / phone numbers in the output?
   - redact:                      mask secrets and PII as a softer alternative to
                                  blocking outright.
+  - find_exfil_links:            does the output build markdown images/links to a
+                                 domain you don't control? (the exfiltration
+                                 channel behind indirect injection — example 10)
+  - strip_exfil_links:           neutralize that channel without blocking outright.
 
 Output checks pair naturally with the rule "the system should never *be able* to
 emit X" — if it does, that's a bug your check catches.
@@ -23,6 +27,17 @@ import re
 
 _EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
 _PHONE = re.compile(r"\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b")
+
+# Domains your app legitimately renders content from. Everything else, in a
+# markdown image/link the client auto-loads, is a potential exfiltration beacon.
+ALLOWED_DOMAINS = {"nimbusnotes.com", "cdn.nimbusnotes.com"}
+
+# Markdown images ![alt](url) and links [text](url).
+_MD_URL = re.compile(r"!?\[[^\]]*\]\((https?://[^)\s]+)\)")
+
+
+def _domain(url: str) -> str:
+    return re.sub(r"^https?://", "", url).split("/")[0].split(":")[0].lower()
 
 
 def contains_secret(output: str, secret: str) -> bool:
@@ -61,3 +76,21 @@ def redact(text: str, secret: str | None = None) -> str:
     out = _EMAIL.sub("[EMAIL]", out)
     out = _PHONE.sub("[PHONE]", out)
     return out
+
+
+def find_exfil_links(text: str, allowed: set[str] = ALLOWED_DOMAINS) -> list[str]:
+    """Return markdown image/link URLs pointing to non-allowlisted domains.
+
+    This checks the *channel*, not the payload: a response that builds a markdown
+    image or link to a domain you don't control is suspicious even if you can't see
+    a secret in it (the data may be encoded or split across the URL). A chat UI
+    that renders markdown will silently fetch such a URL, handing whatever is in it
+    to the attacker's server."""
+    return [u for u in _MD_URL.findall(text) if _domain(u) not in allowed]
+
+
+def strip_exfil_links(text: str, allowed: set[str] = ALLOWED_DOMAINS) -> str:
+    """Neutralize the channel: drop markdown image/link syntax to untrusted domains."""
+    def repl(m):
+        return "[external content removed]" if _domain(m.group(1)) not in allowed else m.group(0)
+    return _MD_URL.sub(repl, text)
