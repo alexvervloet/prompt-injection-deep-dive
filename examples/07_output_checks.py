@@ -38,12 +38,16 @@ print(f"  contains_system_prompt_leak(quote of prompt) -> {g.contains_system_pro
 print(f"  find_pii('reach me at a@b.com 555-123-4567')  -> {g.find_pii('reach me at a@b.com 555-123-4567')}")
 print(f"  redact('pass {g.SECRET} to a@b.com')          -> {g.redact(f'pass {g.SECRET} to a@b.com', g.SECRET)!r}")
 
-# 2. Now wire an output guard onto the bot and attack it. Even if an attack slips
-#    past the input layer and the model starts to leak, the output guard withholds
-#    the response.
-print("\nRunning an attack through a bot with output_guard=True:")
-bot = g.SupportBot(output_guard=True)
-attack = g.ATTACKS[4]  # 'obfuscated_spelling' — designed to dodge input keyword filters
+# 2. Now wire an output guard onto the bot and make the model actually leak, so we
+#    can watch the guard catch it. A current model refuses this attack outright
+#    (example 02) — good, but you can't build a backstop on "the model will refuse."
+#    So we drive the leak with the naive, pre-safety model from example 02
+#    (guardrails/legacy.py): whatever makes a model slip — a weaker/older model, a
+#    novel jailbreak, a poisoned document — the output guard is the deterministic
+#    layer that still withholds the secret.
+print("\nRunning an attack through a bot with output_guard=True (naive model, so it leaks):")
+bot = g.SupportBot(output_guard=True, generate_fn=g.naive_generate)
+attack = g.ATTACKS[0]  # 'direct_override'
 result = bot.ask(attack.payload)
 print(f"  attack: {attack.name}")
 print(f"  bot:    {result.answer}")
@@ -51,6 +55,8 @@ print(f"  blocked by output guard: {result.blocked}  ({result.reason or 'n/a'})"
 
 print(
     "\nOutput checks enforce hard rules on observable text, so they don't depend on "
-    "out-guessing the attacker. They're the backstop behind capability limits — "
-    "and together those two are what you actually rely on."
+    "out-guessing the attacker or on the model choosing to refuse. They're the "
+    "backstop behind capability limits — and together those two are what you "
+    "actually rely on. (Example 10 adds an output check for the exfiltration "
+    "*channel*, which is what stops the indirect attacks from example 03.)"
 )
