@@ -26,9 +26,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from dotenv import load_dotenv
-
 import guardrails as g
+from dotenv import load_dotenv
 
 load_dotenv()
 g.ensure_ready()
@@ -57,7 +56,9 @@ result = privileged.ask("Summarize this for the user.", context=clean_summary)
 print(f"Privileged model's answer to the user:\n  {result.answer}\n")
 
 leaked = g.contains_secret(result.answer, g.SECRET)
-print(f"Did the secret leak? {'YES' if leaked else 'No — the injection never reached the privileged model.'}")
+print(
+    f"Did the secret leak? {'YES' if leaked else 'No — the injection never reached the privileged model.'}"
+)
 print(
     "\nThe attacker's text only ever touched a model with nothing to give and "
     "nothing to do. By the time the privileged model is involved, it's handling a "
