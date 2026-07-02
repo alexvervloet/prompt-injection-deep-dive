@@ -24,9 +24,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from dotenv import load_dotenv
-
 import guardrails as g
+from dotenv import load_dotenv
 
 load_dotenv()
 g.ensure_ready()
@@ -41,7 +40,9 @@ for atk in g.ATTACKS:
     llm = g.llm_detector(atk.payload)
     attack_caught_h += h
     attack_caught_l += llm
-    print(f"{('FLAG' if h else '.'):>10} {('FLAG' if llm else '.'):>5}   [attack:{atk.name}]")
+    print(
+        f"{('FLAG' if h else '.'):>10} {('FLAG' if llm else '.'):>5}   [attack:{atk.name}]"
+    )
 
 fp_h = fp_l = 0
 for benign in g.BENIGN:
@@ -49,11 +50,17 @@ for benign in g.BENIGN:
     llm = g.llm_detector(benign)
     fp_h += h
     fp_l += llm
-    print(f"{('FLAG' if h else '.'):>10} {('FLAG' if llm else '.'):>5}   (benign) {benign[:34]}...")
+    print(
+        f"{('FLAG' if h else '.'):>10} {('FLAG' if llm else '.'):>5}   (benign) {benign[:34]}..."
+    )
 
 n_atk, n_ben = len(g.ATTACKS), len(g.BENIGN)
-print(f"\nAttacks caught   — heuristic {attack_caught_h}/{n_atk}, llm {attack_caught_l}/{n_atk}  (higher is better)")
-print(f"False positives  — heuristic {fp_h}/{n_ben}, llm {fp_l}/{n_ben}  (lower is better)")
+print(
+    f"\nAttacks caught   — heuristic {attack_caught_h}/{n_atk}, llm {attack_caught_l}/{n_atk}  (higher is better)"
+)
+print(
+    f"False positives  — heuristic {fp_h}/{n_ben}, llm {fp_l}/{n_ben}  (lower is better)"
+)
 print(
     "\nThe LLM filter typically catches more attacks with fewer false alarms — but "
     "it's still probabilistic, costs a call, and can itself be injected. A filter "
