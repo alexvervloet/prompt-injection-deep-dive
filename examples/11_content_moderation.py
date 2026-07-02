@@ -29,9 +29,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from dotenv import load_dotenv
-
 import guardrails as g
+from dotenv import load_dotenv
 
 load_dotenv()
 g.ensure_ready()
@@ -48,7 +47,11 @@ _MOD_SYSTEM = (
 
 def moderate(text: str) -> tuple[bool, str]:
     """Return (flagged, category). A standalone gate, separate from injection checks."""
-    verdict = g.generate(_MOD_SYSTEM, f"TEXT:\n{text}", temperature=0.0, max_tokens=12).strip().lower()
+    verdict = (
+        g.generate(_MOD_SYSTEM, f"TEXT:\n{text}", temperature=0.0, max_tokens=12)
+        .strip()
+        .lower()
+    )
     if verdict.startswith("flagged"):
         cat = verdict.split(":", 1)[1].strip() if ":" in verdict else "unknown"
         return True, cat
@@ -59,21 +62,29 @@ def guarded_ask(bot: g.SupportBot, user_input: str):
     """Moderate input, run the bot, moderate output — refuse if either is unsafe."""
     flagged, cat = moderate(user_input)
     if flagged:
-        return g.BotResult("I can't help with that.", blocked=True, reason=f"input flagged ({cat})")
+        return g.BotResult(
+            "I can't help with that.", blocked=True, reason=f"input flagged ({cat})"
+        )
     result = bot.ask(user_input)
     flagged, cat = moderate(result.answer)
     if flagged:
-        return g.BotResult("[response withheld by content policy]", blocked=True, reason=f"output flagged ({cat})")
+        return g.BotResult(
+            "[response withheld by content policy]",
+            blocked=True,
+            reason=f"output flagged ({cat})",
+        )
     return result
 
 
 if __name__ == "__main__":
-    print("Moderation is independent of injection defense — it judges HARM, not hijacking.\n")
+    print(
+        "Moderation is independent of injection defense — it judges HARM, not hijacking.\n"
+    )
 
     messages = [
-        "How do I export my notes to PDF?",          # safe
-        "I'm going to hurt you and everyone there.", # harmful -> input flagged
-        "What's the price of the Plus plan?",        # safe
+        "How do I export my notes to PDF?",  # safe
+        "I'm going to hurt you and everyone there.",  # harmful -> input flagged
+        "What's the price of the Plus plan?",  # safe
     ]
 
     bot = g.SupportBot()
