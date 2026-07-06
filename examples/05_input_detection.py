@@ -16,7 +16,7 @@ Layer it; never rely on it alone.
 
 Run it:
 
-    python examples/05_input_detection.py
+    secrun python examples/05_input_detection.py
 """
 
 import os
