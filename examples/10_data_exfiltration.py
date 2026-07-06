@@ -25,7 +25,7 @@ This shows the check deterministically, then runs a LIVE injection through the b
 
 Run it:
 
-    python examples/10_data_exfiltration.py
+    secrun python examples/10_data_exfiltration.py
 """
 
 import os
