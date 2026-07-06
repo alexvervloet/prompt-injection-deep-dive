@@ -24,7 +24,7 @@ depend on a trickable model making the right call.
 
 Run it:
 
-    python examples/04_prompting_defenses.py
+    secrun python examples/04_prompting_defenses.py
 """
 
 import os
