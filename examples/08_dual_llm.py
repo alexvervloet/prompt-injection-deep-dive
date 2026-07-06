@@ -18,7 +18,7 @@ dual-LLM / CaMeL pattern.)
 
 Run it:
 
-    python examples/08_dual_llm.py
+    secrun python examples/08_dual_llm.py
 """
 
 import os
