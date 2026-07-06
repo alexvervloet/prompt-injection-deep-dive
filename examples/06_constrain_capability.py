@@ -17,7 +17,7 @@ make sure that doesn't matter.**
 
 Run it:
 
-    python examples/06_constrain_capability.py
+    secrun python examples/06_constrain_capability.py
 """
 
 import json
