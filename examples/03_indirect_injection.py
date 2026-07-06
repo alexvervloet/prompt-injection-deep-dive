@@ -22,7 +22,7 @@ the *real* model do it.
 
 Run it:
 
-    python examples/03_indirect_injection.py
+    secrun python examples/03_indirect_injection.py
 """
 
 import os
