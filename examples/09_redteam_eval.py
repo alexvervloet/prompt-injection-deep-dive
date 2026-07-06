@@ -26,7 +26,7 @@ have a 0% success rate. Switch to OpenAI if you want to see a more dramatic drop
 
 Run it:
 
-    python examples/09_redteam_eval.py
+    secrun python examples/09_redteam_eval.py
 """
 
 import os
