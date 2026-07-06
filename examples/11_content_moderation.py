@@ -21,7 +21,7 @@ a dedicated moderation endpoint (OpenAI's is free and fast) for the input side.
 
 Run it:
 
-    python examples/11_content_moderation.py
+    secrun python examples/11_content_moderation.py
 """
 
 import os
