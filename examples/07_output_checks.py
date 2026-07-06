@@ -13,7 +13,7 @@ output guard onto the bot and runs an attack through it.
 
 Run it:
 
-    python examples/07_output_checks.py
+    secrun python examples/07_output_checks.py
 """
 
 import os
