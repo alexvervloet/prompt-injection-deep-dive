@@ -24,7 +24,7 @@ injection), where the same trick still lands.
 
 Run it:
 
-    python examples/02_direct_injection.py
+    secrun python examples/02_direct_injection.py
 """
 
 import os
