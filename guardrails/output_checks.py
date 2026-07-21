@@ -1,9 +1,8 @@
 """
-guardrails/output_checks.py — output guardrails (catch the leak on the way out).
-================================================================================
+guardrails/output_checks.py: output guardrails (catch the leak on the way out).
 
 Even with input filtering and a careful system prompt, something may still slip
-through — so check what the model is about to say *before* the user sees it. This
+through, so check what the model is about to say *before* the user sees it. This
 is often your most reliable layer, because it doesn't depend on guessing the
 attacker's intent; it inspects concrete, observable output.
 
@@ -16,11 +15,11 @@ These checks are pure, offline functions:
                                  blocking outright.
   - find_exfil_links:            does the output build markdown images/links to a
                                  domain you don't control? (the exfiltration
-                                 channel behind indirect injection — example 10)
+                                 channel behind indirect injection; example 10)
   - strip_exfil_links:           neutralize that channel without blocking outright.
 
 Output checks pair naturally with the rule "the system should never *be able* to
-emit X" — if it does, that's a bug your check catches.
+emit X". If it does, that's a bug your check catches.
 """
 
 import re
@@ -41,7 +40,7 @@ def _domain(url: str) -> str:
 
 
 def contains_secret(output: str, secret: str) -> bool:
-    """True if `secret` appears in the output — including obfuscated forms like
+    """True if `secret` appears in the output, including obfuscated forms like
     'B L U E - M O O N' or one character per line (we strip non-alphanumerics and
     compare). Attackers split secrets exactly to dodge naive exact-match checks."""
     if secret.lower() in output.lower():
@@ -52,7 +51,7 @@ def contains_secret(output: str, secret: str) -> bool:
 
 def contains_system_prompt_leak(output: str, system: str, window: int = 8) -> bool:
     """True if the output reproduces a distinctive run of words from the system
-    prompt — a sign the model is leaking its own instructions."""
+    prompt: a sign the model is leaking its own instructions."""
     out_low = output.lower()
     words = system.split()
     for i in range(max(0, len(words) - window + 1)):
@@ -63,7 +62,7 @@ def contains_system_prompt_leak(output: str, system: str, window: int = 8) -> bo
 
 
 def find_pii(text: str) -> dict:
-    """Find obvious PII (emails, phone numbers). A starting point, not exhaustive —
+    """Find obvious PII (emails, phone numbers). A starting point, not exhaustive 
     real PII detection needs more (names, addresses, IDs)."""
     return {"emails": _EMAIL.findall(text), "phones": _PHONE.findall(text)}
 

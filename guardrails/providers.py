@@ -1,8 +1,7 @@
 """
-guardrails/providers.py — the ONLY provider-specific file.
-==========================================================
+guardrails/providers.py: the ONLY provider-specific file.
 
-Defending against prompt injection is provider-agnostic — the attacks, the
+Defending against prompt injection is provider-agnostic. The attacks, the
 detectors, and the architectural defenses are the same whoever serves the model.
 So we hide the one provider call (`generate`) behind a tiny function and keep the
 rest of the repo neutral.
@@ -13,7 +12,7 @@ Pick your stack with `PROVIDER` in `.env`:
   PROVIDER=claude  ->  Claude messages (needs ANTHROPIC_API_KEY)
 
 `generate` defaults to temperature 0 so attacks and defenses behave as
-repeatably as possible — useful when you're trying to tell whether a defense
+repeatably as possible, which helps when you're trying to tell whether a defense
 actually changed the outcome.
 """
 
