@@ -1,8 +1,7 @@
 """
-Example 11 — content moderation: a different guardrail than injection defense.
-==============================================================================
+Example 11: content moderation: a different guardrail than injection defense.
 
-Everything else in this repo defends against *injection* — someone hijacking the
+Everything else in this repo defends against *injection*: someone hijacking the
 model's instructions. **Moderation** answers a different question: is this content
 *harmful* (hate, violence, sexual, self-harm)? The two are independent layers, and
 a serious app wants both:
@@ -59,7 +58,7 @@ def moderate(text: str) -> tuple[bool, str]:
 
 
 def guarded_ask(bot: g.SupportBot, user_input: str):
-    """Moderate input, run the bot, moderate output — refuse if either is unsafe."""
+    """Moderate input, run the bot, moderate output, and refuse if either is unsafe."""
     flagged, cat = moderate(user_input)
     if flagged:
         return g.BotResult(
@@ -78,7 +77,7 @@ def guarded_ask(bot: g.SupportBot, user_input: str):
 
 if __name__ == "__main__":
     print(
-        "Moderation is independent of injection defense — it judges HARM, not hijacking.\n"
+        "Moderation is independent of injection defense: it judges HARM, not hijacking.\n"
     )
 
     messages = [

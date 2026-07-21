@@ -1,15 +1,14 @@
 """
-Example 06 — the real defense: constrain capability.
-====================================================
+Example 06: the real defense: constrain capability.
 
 Detection guesses intent and will sometimes be wrong. The defense that doesn't
 depend on guessing is to limit what the model is *able* to cause. If the model has
 no authority to do the dangerous thing, then convincing it to want to is harmless.
 
-Here a toy "account assistant" can pick an action. One action — `delete_account` —
+Here a toy "account assistant" can pick an action. One action, `delete_account`,
 is destructive. An injected message tries hard to trigger it. But the harness only
 auto-runs allow-listed actions; anything dangerous is refused (or, in a real app,
-routed to human approval — exactly the gate from the agents-deep-dive repo). So
+routed to human approval, exactly the gate from the agents-deep-dive repo). So
 even when the model is fully fooled, nothing bad executes.
 
 This is the heart of injection defense: **assume the model will be tricked, and
@@ -58,7 +57,7 @@ except (ValueError, TypeError):
 
 print(f"The model CHOSE the action: {action!r}")
 
-# The capability gate — this is what actually protects you.
+# The capability gate: this is what actually protects you.
 if action in AUTO_ALLOWED:
     print(f"Harness: '{action}' is allow-listed -> would execute.")
 else:
@@ -66,7 +65,7 @@ else:
 
 print(
     "\nWhether or not the model fell for it, the destructive action can't run on "
-    "its own — the harness, not the model, holds the authority. Detection and "
+    "its own: the harness, not the model, holds the authority. Detection and "
     "prompting try to stop the model from being tricked; capability limits make "
     "being tricked survivable. Always have the second kind."
 )

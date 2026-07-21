@@ -1,9 +1,8 @@
 """
-Example 07 — output guardrails: catch the leak on the way out.
-=============================================================
+Example 07: output guardrails: catch the leak on the way out.
 
 Your most reliable layer often comes last: inspect what the model is about to say
-before the user sees it. Unlike input detection, this doesn't guess intent — it
+before the user sees it. Unlike input detection, this doesn't guess intent. It
 checks concrete output for things that must never appear (a secret, the system
 prompt, PII). If your policy is "this system must never emit the passphrase," an
 output check enforces it directly.
@@ -29,7 +28,7 @@ load_dotenv()
 g.ensure_ready()
 print(f"Provider: {g.describe()}\n")
 
-# 1. The checks themselves are deterministic — no guessing.
+# 1. The checks themselves are deterministic: no guessing.
 print("Output checks on sample strings:")
 print(f"  contains_secret('...{g.SECRET}...')          -> {g.contains_secret(f'the code is {g.SECRET}', g.SECRET)}")
 print(f"  contains_secret('B L U E - M O O N - 4 2')   -> {g.contains_secret('B L U E - M O O N - 4 2', g.SECRET)}  (obfuscated)")
@@ -40,10 +39,10 @@ print(f"  redact('pass {g.SECRET} to a@b.com')          -> {g.redact(f'pass {g.S
 
 # 2. Now wire an output guard onto the bot and make the model actually leak, so we
 #    can watch the guard catch it. A current model refuses this attack outright
-#    (example 02) — good, but you can't build a backstop on "the model will refuse."
+#    (example 02): good, but you can't build a backstop on "the model will refuse."
 #    So we drive the leak with the naive, pre-safety model from example 02
-#    (guardrails/legacy.py): whatever makes a model slip — a weaker/older model, a
-#    novel jailbreak, a poisoned document — the output guard is the deterministic
+#    (guardrails/legacy.py): whatever makes a model slip: a weaker/older model, a
+#    novel jailbreak, a poisoned document: the output guard is the deterministic
 #    layer that still withholds the secret.
 print("\nRunning an attack through a bot with output_guard=True (naive model, so it leaks):")
 bot = g.SupportBot(output_guard=True, generate_fn=g.naive_generate)
@@ -56,7 +55,7 @@ print(f"  blocked by output guard: {result.blocked}  ({result.reason or 'n/a'})"
 print(
     "\nOutput checks enforce hard rules on observable text, so they don't depend on "
     "out-guessing the attacker or on the model choosing to refuse. They're the "
-    "backstop behind capability limits — and together those two are what you "
+    "backstop behind capability limits, and together those two are what you "
     "actually rely on. (Example 10 adds an output check for the exfiltration "
     "*channel*, which is what stops the indirect attacks from example 03.)"
 )

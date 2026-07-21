@@ -1,13 +1,12 @@
 """
-Example 01 — the attack surface (offline, no API call).
-=======================================================
+Example 01: the attack surface (offline, no API call).
 
 To defend a system you first have to see how it's attacked. This example tours
-the attack catalog (guardrails/attacks.py) and runs the cheapest defense — offline
-pattern matching — over it, so you can immediately see that pattern matching alone
+the attack catalog (guardrails/attacks.py) and runs the cheapest defense, offline
+pattern matching, over it, so you can immediately see that pattern matching alone
 is a weak defense: it misses obfuscated attacks AND flags innocent messages.
 
-Everything here is offline and free — pure data and regexes, no model.
+Everything here is offline and free: pure data and regexes, no model.
 
 Run it:
 
@@ -30,7 +29,7 @@ for atk in g.ATTACKS:
     print(f"  payload: {atk.payload[:80].strip()}...")
 
 print("\n\n=== Heuristic detector vs the catalog (and benign messages) ===")
-print("A naive keyword filter — watch it both miss and over-fire.\n")
+print("A naive keyword filter. Watch it both miss and over-fire.\n")
 print(f"  {'flagged':>7}  input")
 print("  " + "-" * 60)
 for atk in g.ATTACKS:

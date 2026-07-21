@@ -1,6 +1,5 @@
 """
-Example 05 — input detection: heuristic vs LLM filter.
-======================================================
+Example 05: input detection: heuristic vs LLM filter.
 
 A guardrail in front of the model: inspect the input and refuse what looks like an
 attack. This compares the two detectors from guardrails/detectors.py over the
@@ -8,8 +7,8 @@ whole attack catalog AND the benign control set, so you can see their error rate
 
   - the heuristic (offline keywords): misses obfuscated attacks, and false-flags
     innocent messages that contain a trigger word.
-  - the LLM detector: better on both — catches paraphrase, clears the benign
-    messages — but costs a call each, adds latency, and is itself fallible.
+  - the LLM detector: better on both, catching paraphrase and clearing the benign
+    messages, but it costs a call each, adds latency, and is itself fallible.
 
 The honest conclusion: detection lowers the attack rate, it doesn't zero it.
 Layer it; never rely on it alone.
@@ -56,13 +55,13 @@ for benign in g.BENIGN:
 
 n_atk, n_ben = len(g.ATTACKS), len(g.BENIGN)
 print(
-    f"\nAttacks caught   — heuristic {attack_caught_h}/{n_atk}, llm {attack_caught_l}/{n_atk}  (higher is better)"
+    f"\nAttacks caught:   heuristic {attack_caught_h}/{n_atk}, llm {attack_caught_l}/{n_atk}  (higher is better)"
 )
 print(
-    f"False positives  — heuristic {fp_h}/{n_ben}, llm {fp_l}/{n_ben}  (lower is better)"
+    f"False positives:  heuristic {fp_h}/{n_ben}, llm {fp_l}/{n_ben}  (lower is better)"
 )
 print(
-    "\nThe LLM filter typically catches more attacks with fewer false alarms — but "
+    "\nThe LLM filter typically catches more attacks with fewer false alarms, but "
     "it's still probabilistic, costs a call, and can itself be injected. A filter "
     "buys you margin, not safety."
 )
