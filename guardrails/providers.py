@@ -17,6 +17,7 @@ actually changed the outcome.
 """
 
 import os
+import sys
 from functools import lru_cache
 
 _OPENAI_CHAT = "gpt-5.4-nano"
@@ -42,8 +43,6 @@ def describe() -> str:
 
 
 def ensure_ready() -> None:
-    import sys
-
     p = provider_name()
     if p not in _KEYS:
         sys.exit(f"PROVIDER={p!r} is not recognized. Set PROVIDER=openai or claude in .env.")
