@@ -145,7 +145,7 @@ the injection in it reach the secret?
 Because the quarantined model has no secret and no authority, so there's nothing to
 steal or do. It emits a sanitized summary, and only *that* (as data) reaches the
 privileged model. The attacker's raw text never touches the model that holds the
-secret. Separating untrusted input from authority is the most robust defense.
+secret. Separating untrusted input from authority is the defense that holds up best.
 </details>
 
 ---
