@@ -21,6 +21,16 @@ agents, through a tool result that says "now delete everything". You measure you
 the way you measure anything else, with evals, where the metric is how often the attacker
 won.
 
+> **About the attack strings in this repo.** It contains working injection payloads,
+> jailbreak attempts, and exfiltration patterns. That is deliberate, and it is what makes
+> the defenses worth anything, because you cannot measure a guardrail against an attack
+> you did not write. Every one targets the toy system in this same repo, and the secrets
+> they steal are invented and protect nothing. There is no malware here and nothing that
+> reaches outside the directory you run it in. If a scanner flags this repo, this is what
+> it found. Details in
+> [SECURITY.md](https://github.com/alexvervloet/ai-engineering-deep-dive/blob/main/SECURITY.md).
+> Use these techniques on systems you own or are authorized to test.
+
 Like its siblings, walk through it. The first section runs offline and free.
 [EXERCISES.md](EXERCISES.md) has a predict-then-run prompt for each section.
 
