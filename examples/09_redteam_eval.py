@@ -13,7 +13,7 @@ against a modern model:
     so they mostly show up as "resisted" even on the naive bot. Real progress.
   - the INDIRECT, task-aligned attacks (append an attacker line / emit a beacon) 
     these still get through the naive bot, and they're what your defenses have to
-    earn their keep against.
+    prove themselves against.
 
 Watch the number fall, and watch it NOT reach zero: the plain-text phishing line
 slips past every layer here (a markdown-channel check can't catch prose). "Low on
