@@ -62,7 +62,7 @@ def contains_system_prompt_leak(output: str, system: str, window: int = 8) -> bo
 
 
 def find_pii(text: str) -> dict:
-    """Find obvious PII (emails, phone numbers). A starting point, not exhaustive 
+    """Find obvious PII (emails, phone numbers). A starting point, not exhaustive;
     real PII detection needs more (names, addresses, IDs)."""
     return {"emails": _EMAIL.findall(text), "phones": _PHONE.findall(text)}
 
