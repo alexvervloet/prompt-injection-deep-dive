@@ -44,7 +44,7 @@ def naive_generate(system: str, user: str, **_ignored) -> str:
     """Reconstruct how a pre-safety instruction-following model answered.
 
     Signature mirrors ``providers.generate`` so a ``SupportBot`` can run on either
-    one. Extra keyword args (temperature, max_tokens) are accepted and ignored 
+    one. Extra keyword args (temperature, max_tokens) are accepted and ignored;
     there's no sampling here, just a scripted policy.
     """
     secret = _extract_secret(system)
