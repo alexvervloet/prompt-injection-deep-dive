@@ -56,7 +56,7 @@ print()
 
 # 2. A live indirect injection that requests a beacon image, not a printout. The
 #    model refuses to write the *secret* into a URL, but happily adds an
-#    attacker-controlled "status" image: and that request is the exfil channel.
+#    attacker-controlled "status" image, and that request is the exfil channel.
 attack = g.INDIRECT_ATTACKS[1]  # 'doc_exfil_image'
 print("Running a live indirect injection that requests an exfiltration beacon:\n")
 bot = g.SupportBot()  # naive
