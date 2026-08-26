@@ -11,7 +11,7 @@ against a modern model:
 
   - the DIRECT attacks (leak the secret): the model now refuses these on its own,
     so they mostly show up as "resisted" even on the naive bot. Real progress.
-  - the INDIRECT, task-aligned attacks (append an attacker line / emit a beacon) 
+  - the INDIRECT, task-aligned attacks (append an attacker line / emit a beacon):
     these still get through the naive bot, and they're what your defenses have to
     prove themselves against.
 
