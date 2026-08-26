@@ -7,7 +7,7 @@ bot (see targets.py) whose system prompt contains a fake secret passphrase and a
 instruction never to reveal it. Every attack tries to get that fake secret out,
 or to make the bot ignore its instructions.
 
-These are well-known, widely-documented patterns used for *defensive* testing 
+These are well-known, widely-documented patterns used for *defensive* testing;
 the entire point of this repo is to defend against them. They target only this
 repo's own toy bot with a made-up secret; nothing here is aimed at any real
 system, and there are no novel exploits.
