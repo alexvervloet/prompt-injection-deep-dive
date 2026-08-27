@@ -2,10 +2,10 @@
 """
 hardened_bot.py: the capstone: a defended assistant + a red-team harness.
 
-Everything in the repo, assembled. A support bot with the full stack of defenses 
-input detection, untrusted-data handling, and output checks, that you can chat
-with, deliberately weaken, or attack with the whole catalog to measure how well it
-holds up.
+Everything in the repo, assembled. A support bot carrying the full stack of
+defenses: input detection, untrusted-data handling, and output checks. You can
+chat with it, deliberately weaken it, or attack it with the whole catalog to
+measure how well it holds up.
 
 Examples
 --------
