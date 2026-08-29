@@ -4,6 +4,7 @@ guardrails: a small, from-scratch toolkit for prompt-injection defense.
 Built to be *read*. The pieces:
 
   providers.py     the ONLY provider-specific file: generate()
+  normalize.py     fold text to a comparison form before any filter reads it
   attacks.py       a catalog of injection attacks + a benign control set
   detectors.py     input guardrails: heuristic + LLM injection detection
   output_checks.py output guardrails: secret / system-prompt-leak / PII checks
@@ -25,6 +26,7 @@ from .attacks import (
 )
 from .detectors import HEURISTIC_PATTERNS, heuristic_detector, llm_detector
 from .legacy import naive_generate
+from .normalize import CONFUSABLES, describe_encoding, fold, is_mixed_script, squash
 from .output_checks import (
     ALLOWED_DOMAINS,
     contains_secret,
@@ -49,6 +51,11 @@ __all__ = [
     "heuristic_detector",
     "llm_detector",
     "HEURISTIC_PATTERNS",
+    "fold",
+    "squash",
+    "is_mixed_script",
+    "describe_encoding",
+    "CONFUSABLES",
     "contains_secret",
     "contains_system_prompt_leak",
     "find_pii",
