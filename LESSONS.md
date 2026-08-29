@@ -49,3 +49,46 @@ the surviving failures still carry the argument, which they do.
 **Next time:** after hardening something a lesson depends on, re-read the lesson
 before the code. If the fix makes the teaching example stop teaching, the
 example was demonstrating the wrong thing.
+
+## "Cannot be replayed" was true and answered a different question
+
+**Expected:** the approval control was finished. Its docstring said an approval
+"cannot be replayed against a different tenant, tool, or object", there was an
+exercise called "Design an approval replay attack", and a test asserted the
+binding held.
+
+**What happened:** all of that was accurate and none of it covered replay at the
+same target. Fifty authorizations from one approval returned True. The sentence
+in the docstring is carefully worded and every word of it is correct, which is
+exactly why nobody noticed the clause it does not contain.
+
+The tell was available the whole time. `RequestBudget` in the same repository
+burns a reservation id exactly once, and `incidents.py` dedups replayed
+operations. One codebase, three modules, two strengths of the same idea, and the
+weakest one guarded the irreversible effects.
+
+**Next time:** when a security claim is scoped by a prepositional phrase, read
+the phrase as the boundary of the claim rather than as detail. "Cannot be
+replayed *against a different X*" is a statement about aiming, not about
+freshness. And when one module in a codebase implements an idea more strongly
+than another, that is a finding, not a style inconsistency.
+
+## An idempotency key looks like a nonce and is not one
+
+**Expected:** requiring an idempotency key on writes was replay protection, and
+`ApprovalChallenge` would be a small addition to something already most of the
+way there.
+
+**What happened:** they are unrelated controls that share a shape. An
+idempotency key guarantees a duplicate submission converges on one effect, which
+is a correctness property, and a predictable value serves it perfectly well. A
+nonce guarantees a duplicate is refused, which is a security property, and a
+predictable value destroys it. The broker accepted any non-empty string and the
+model chose it.
+
+Writing the two of them as a table in the chapter was what made the difference
+legible. In prose they kept reading as the same paragraph.
+
+**Next time:** when two controls share a vocabulary, put them in a table with a
+column for who issues the value and a column for whether it may be predictable.
+If those columns differ, the controls differ, whatever the code calls them.
