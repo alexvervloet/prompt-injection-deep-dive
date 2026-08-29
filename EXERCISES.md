@@ -302,6 +302,42 @@ output check remains the only defense that travels with the text.
 
 ---
 
+## Section 15: the region you cannot fence
+
+**Recall.** You wrap the untrusted document in a nonce tag and strip anything
+tag-shaped out of it, so the attacker can neither guess your delimiter nor forge
+one. Name the text in that prompt the nonce protects nothing about, and say why
+you could not have fenced it even if you had wanted to.
+
+<details><summary>▸ Answer</summary>
+
+Everything outside the tags: the task line, the instructions, the identifiers.
+The nonce protects the boundary between the two regions and says nothing about
+what you yourself put on the trusted side of it.
+
+You could not have fenced it because of the ordering. The prompt is assembled
+before the nonce exists, so the outer region is written first and by definition
+is not inside anything. That is not a flaw in the design, it is what a fence
+means: it marks a region, so there is always a region it does not mark.
+
+Which makes the fence worth exactly what your assembly keeps out of that region,
+and the failure looks like helpfulness rather than like an attack. A ticket
+subject in the task line, a customer's email in a heading, the first forty
+characters of a body quoted for context. Run
+`python examples/14_unfenceable_region.py`: four of its five plausible task lines
+carry untrusted text across the boundary, and no string defense in this repo
+reports a problem, because nothing was forged.
+
+The rule is that identifiers your system minted are safe there and anything a
+user typed is not. The part worth copying is that the rule is testable.
+`unfenced_untrusted` asks which untrusted fields appear outside the fence and
+should always answer none. A comment saying the same thing is not a test, and
+writing one makes the claim less likely to be checked, because every later reader
+takes it as established.
+</details>
+
+---
+
 ### Where to take it next
 
 Invent your own attacks against your own systems (only your own; this is
