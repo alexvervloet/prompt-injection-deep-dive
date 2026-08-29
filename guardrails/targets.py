@@ -69,6 +69,45 @@ def fence_document(document: str, nonce: str) -> str:
     return f"{open_tag}\n{_TAG_SHAPED.sub('[tag removed]', document)}\n{close_tag}"
 
 
+def unfenced_untrusted(
+    prompt: str, record: dict[str, str], nonce: str, min_run: int = 24
+) -> list[str]:
+    """Which untrusted fields appear in the part of the prompt that is not fenced.
+
+    Should always return []. `fence_document` protects the region between the
+    tags; nothing protects the region outside them, and in a nonce design that
+    region is unavoidable, because the prompt is assembled before the nonce
+    exists. So the fence is only worth what your assembly keeps out of it, and
+    that is a property of the assembly rather than of the fence. Example 14 is
+    this check finding a leak that the fence itself cannot see.
+
+    Matching is on any run of `min_run` characters rather than on the whole
+    value, because the assembly that leaks is usually the one being helpful:
+    a subject truncated to fit a log line, the first sentence of a body quoted
+    "for context". An equality check calls all of those clean and is worse than
+    useless, since it reports success on the exact pattern most likely to be
+    written. Values shorter than `min_run` are matched whole.
+
+    Coarse in the safe direction. A long enough run of a user's text appearing
+    outside for innocent reasons is unlikely; a false alarm on a precondition
+    costs a developer one look, and a miss costs an injection.
+    """
+    open_tag, close_tag = fence_tags(nonce)
+    start, end = prompt.find(open_tag), prompt.find(close_tag)
+    if start == -1 or end == -1:
+        return sorted(name for name, value in record.items() if value)
+    outside = prompt[:start] + prompt[end + len(close_tag) :]
+
+    def leaks(value: str) -> bool:
+        if len(value) <= min_run:
+            return value in outside
+        return any(
+            value[i : i + min_run] in outside for i in range(len(value) - min_run + 1)
+        )
+
+    return sorted(name for name, value in record.items() if value and leaks(value))
+
+
 def build_support_system(secret: str = SECRET) -> str:
     """The bot's system prompt, including the secret it's told to protect."""
     return (
