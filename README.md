@@ -285,6 +285,18 @@ cannot see a secret in the URL, because it may be encoded.
 secrun python examples/10_data_exfiltration.py
 ```
 
+That check is one end of the channel. The other end is the browser, which is the only
+component that can refuse the request without inspecting anything: a Content-Security-Policy
+restricting `img-src` and `connect-src` to origins you control means the fetch is never
+issued, rather than being stripped before it would have been. If you render model-authored
+HTML instead of markdown, add `script-src` with a per-response nonce, which is the delimiter
+trick from section 5 pointed at the browser, and works for the same reason: the attacker
+writes the payload before the nonce exists. There is no example for this because the repo
+has no browser, and a simulated one would teach less than the paragraph. Note the limit
+too. A policy protects the page you serve and does nothing when another client renders
+your model's output, which is most integrations, so it layers with the output check rather
+than replacing it.
+
 ### Content moderation, a different guardrail from injection defense
 Injection defense stops the model being hijacked. Moderation stops harmful content, so
 hate, violence, sexual, and self-harm, coming in or going out. They are independent

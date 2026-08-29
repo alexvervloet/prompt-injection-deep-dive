@@ -279,6 +279,29 @@ because there was nothing forged to strip.
 
 ---
 
+## Section 14: the other end of the exfiltration channel
+
+**Recall.** `strip_exfil_links` removes markdown images and links to domains you do not
+control. Name the component that could have refused the request without reading the
+model's output at all, and what you would configure on it.
+
+<details><summary>▸ Answer</summary>
+
+The browser. A Content-Security-Policy restricting `img-src` and `connect-src` to
+origins you control means the beacon fetch is never issued, rather than being stripped
+just before it would have been. For an interface that renders model-authored HTML,
+`script-src` with a per-response nonce stops a model-produced `<script>` executing, for
+the same reason the delimiter nonce works: the attacker writes the payload before the
+value exists.
+
+The limit is the interesting half. A policy protects the page your application serves
+and does nothing when some other client renders your model's output, which describes
+most integrations. So it layers with the output check rather than replacing it, and an
+output check remains the only defense that travels with the text.
+</details>
+
+---
+
 ### Where to take it next
 
 Invent your own attacks against your own systems (only your own; this is
