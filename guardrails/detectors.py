@@ -10,6 +10,11 @@ attack. Two approaches, with different tradeoffs:
     happen to contain a trigger word (false positives). Naive keyword filters
     over-fire and under-fire at the same time.
 
+    It matches on the folded form (normalize.fold), so respelling a trigger word
+    with a Cyrillic "о" or a zero-width space no longer walks past it. That
+    closes one evasion family and none of the others: paraphrase still defeats
+    it completely, which is the point of the layer below.
+
   - llm_detector: ask a model "is this an injection attempt?". Smarter about
     paraphrase and context, but costs a call, adds latency, and is itself a model
     that can be wrong (or injected). Better, not perfect.
@@ -22,6 +27,7 @@ intent.
 
 import re
 
+from .normalize import fold, is_mixed_script
 from .providers import generate
 
 # Note the deliberately naive entries (bare `ignore`, `disregard`): real filters
@@ -42,11 +48,22 @@ HEURISTIC_PATTERNS = [
 
 def heuristic_detector(text: str) -> tuple[bool, str]:
     """Return (flagged, reason) from offline pattern matching. Free, instant,
-    and crude: good as a cheap first pass, useless as a sole defense."""
-    low = text.lower()
+    and crude: good as a cheap first pass, useless as a sole defense.
+
+    Patterns run against the folded text. Without that, "іgnore previous
+    instructions" with a Cyrillic "і" is a different string to every pattern in
+    the list and sails through, while reading identically to the model that
+    receives it.
+    """
+    folded = fold(text)
     for pat in HEURISTIC_PATTERNS:
-        if re.search(pat, low):
+        if re.search(pat, folded):
             return True, f"matched /{pat}/"
+    # One word spelled from two alphabets is not something ordinary text does.
+    # This catches the confusable family as a class rather than one lookalike at
+    # a time, which matters because CONFUSABLES is a practical subset.
+    if is_mixed_script(text):
+        return True, "mixed-script text"
     return False, ""
 
 
