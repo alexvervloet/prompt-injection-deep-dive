@@ -296,6 +296,47 @@ secrun python examples/11_content_moderation.py
 
 ---
 
+## Two holes in the string handling
+
+Both of these are in the same category, and it is not the category the rest of the
+repo is about. Everything above concerns a model that can be argued with. These two
+concern comparisons and concatenations that the attacker gets to write into, which
+means unlike most of this material they have complete fixes.
+
+### The filter reads bytes, the model reads words
+
+Every check here is a string comparison, and the attacker picks the bytes. `BLUE-MOON-42`
+and `ВLUЕ-MOON-42` are different strings and the same passphrase, because the second holds
+a Cyrillic В and Е.
+
+```bash
+python examples/12_unicode_evasion.py
+```
+
+This one was live in this repo. `contains_secret` stripped non-alphanumerics to catch
+`B L U E - M O O N`, but `str.isalnum()` is true for Cyrillic and fullwidth letters, so
+they survived the squash and the leak check missed them. Note that this is a different
+failure from the "misses obfuscated attacks" line in section 6, even though both get
+called obfuscation: a paraphrase needs a smarter classifier, a respelling needs four
+lines of folding.
+
+### A fixed delimiter is one the attacker can type
+
+Section 5 says delimiters are a speed bump because the model can be talked past them.
+True, and it stops one step short. If the tag never changes, a poisoned document can
+contain `</untrusted_document>` and everything after it reads as application text.
+
+```bash
+python examples/13_delimiter_forgery.py
+```
+
+A nonce in the tag closes that completely, since a document written last week cannot
+carry digits generated at request time. What it does not close is the document politely
+asking for the passphrase, which arrives intact and correctly marked as data. Fixing the
+impersonation does not fix the persuasion, and that is the honest split.
+
+---
+
 ## The gap that survives: plain-text phishing in prose
 
 Run the red-team eval enough times, across providers, and one attack keeps slipping
@@ -378,6 +419,7 @@ README.md                   ← this guide
 EXERCISES.md                ← predict-then-run prompts, one per section
 guardrails/                 ← the from-scratch defense toolkit (read it!)
   providers.py              ← the ONLY provider-specific file: generate()
+  normalize.py              ← fold text before any filter compares it
   attacks.py                ← the attack catalog + a benign control set
   detectors.py              ← input guardrails: heuristic + LLM detection
   output_checks.py          ← output guardrails: secret / prompt-leak / PII checks
@@ -397,6 +439,8 @@ examples/
   09_redteam_eval.py        ← attack-success-rate, before vs after
   10_data_exfiltration.py   ← markdown image/link leaks; defend the channel on output
   11_content_moderation.py  ← moderate harmful content (input + output): a distinct layer
+  12_unicode_evasion.py     ← the filter reads bytes, the model reads words (no key)
+  13_delimiter_forgery.py   ← a fixed delimiter is one the attacker can type (no key)
 ```
 
 ---
