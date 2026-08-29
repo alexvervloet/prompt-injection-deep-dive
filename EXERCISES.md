@@ -221,6 +221,64 @@ the app never emits harmful content even if a jailbreak or hallucination produce
 
 ---
 
+## Section 12: encoding evasion
+
+**Predict.** `contains_secret` already strips non-alphanumerics, so it catches
+`B L U E - M O O N - 4 2`. Will it catch `ВLUЕ-MOON-42`, spelled with a Cyrillic
+В and Е? Write your answer down, then run `python examples/12_unicode_evasion.py`.
+
+<details><summary>▸ Answer</summary>
+
+No, and this was a real bug in this repo rather than a hypothetical. The squash
+keeps anything `str.isalnum()` accepts, and that is true for Cyrillic and
+fullwidth letters, so they pass through unchanged and the comparison fails on a
+passphrase that any human reads correctly.
+
+The fix is to fold before comparing: strip invisible characters, expand
+compatibility forms, drop combining marks, substitute Latin lookalikes. Note
+what it does *not* fix. The paraphrase in section 6 still walks past the
+heuristic and the benign "ignore the typos" message still trips it. Encoding
+and meaning are different problems that both get called "obfuscation".
+</details>
+
+**Do.** `CONFUSABLES` in `guardrails/normalize.py` has a few dozen entries and the
+real Unicode table has thousands. What does `is_mixed_script` buy you that adding
+more entries does not?
+
+<details><summary>▸ Answer</summary>
+
+It catches the family as a class instead of one character at a time, so it does
+not depend on your table being complete. The cost is that it only works where
+the text is supposed to be one script, and it has to run per word: a Greek
+quotation inside an English document is legitimate, while a single word built
+from two alphabets is not.
+</details>
+
+---
+
+## Section 13: delimiter forgery
+
+**Recall.** Section 5 said delimiters are a speed bump because you are asking a
+trickable model to police itself. There is a second failure underneath that one.
+What is it, and why is only one of the two fixable?
+
+<details><summary>▸ Answer</summary>
+
+If the tag is a fixed string, the attacker does not have to argue with the model
+at all: they write `</untrusted_document>` inside the document, and everything
+after it reads as application text. That is impersonation rather than
+persuasion.
+
+The persuasion half is a fact about models and you cannot fix it in your string
+handling. The impersonation half is a fact about your concatenation and you can:
+put a nonce in the tag, because a document written last week cannot carry digits
+generated at request time. Run `python examples/13_delimiter_forgery.py` to see
+both halves, including a politely-worded request that survives the fence intact
+because there was nothing forged to strip.
+</details>
+
+---
+
 ### Where to take it next
 
 Invent your own attacks against your own systems (only your own; this is
