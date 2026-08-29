@@ -347,6 +347,36 @@ carry digits generated at request time. What it does not close is the document p
 asking for the passphrase, which arrives intact and correctly marked as data. Fixing the
 impersonation does not fix the persuasion, and that is the honest split.
 
+### The region you cannot fence
+
+The mirror image, and the one that survives review, because nothing is forged and every
+mechanism above works perfectly while it happens.
+
+```bash
+python examples/14_unfenceable_region.py
+```
+
+A fenced prompt has two regions, and the nonce protects only the boundary between them.
+Outside the tags is the task line, the instructions, the identifiers: the part the model
+is meant to read as yours. You cannot fence that region, and in a nonce design the
+ordering forces it, since the prompt is assembled before the nonce exists. So the fence
+is worth exactly what your assembly keeps out of it.
+
+The failure looks like helpfulness. A ticket has an id and a subject, the id reads as
+noise in a trace, and the subject is one short line that makes the trajectory legible, so
+it goes in the task line. The subject is also a field a customer typed into a form. The
+example enumerates five task lines a developer might reasonably write and shows which
+ones carry untrusted text across the boundary. Four of the five do, including one that
+merely quotes the first forty characters of the body for context.
+
+There is no mechanism for this, only a rule: identifiers your system minted are safe on
+the trusted side, and anything a user typed belongs on the other side of the tags,
+however short and however useful. What makes it stick is that the rule is testable.
+`unfenced_untrusted` in [guardrails/targets.py](guardrails/targets.py) asks which
+untrusted fields appear outside the fence and should always answer none. Four lines, and
+it fails on exactly the change that reintroduces the bug, which is more than the comment
+that usually stands in for it can do.
+
 ---
 
 ## The gap that survives: plain-text phishing in prose
