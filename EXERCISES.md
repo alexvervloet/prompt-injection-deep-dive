@@ -1,6 +1,6 @@
 # Exercises: make the learning stick
 
-Reading code teaches you less than *predicting* what it will do and then checking.
+Reading code teaches you less than *predicting* what it'll do and then checking.
 This file turns each section of the [README](README.md) into a few quick
 active-recall prompts.
 
@@ -47,7 +47,7 @@ boundary.
 ## Section 4: Indirect injection
 
 **Predict.** In `examples/03_indirect_injection.py`, the user's request is
-innocent ("summarize this document") but the document is poisoned. Who is the
+innocent ("summarize this document") but the document is poisoned. Who's the
 attacker, and why does this matter more than direct injection?
 
 <details><summary>▸ Answer</summary>
@@ -103,7 +103,7 @@ injected. Better, not free, not perfect.
 <details><summary>▸ Answer</summary>
 
 Detection guesses intent and will sometimes guess wrong. Capability limits don't
-guess: if the model literally cannot trigger the destructive action (it's not
+guess: if the model literally can't trigger the destructive action (it's not
 allow-listed / needs human approval), then convincing it to *want* to is harmless.
 "Assume it gets tricked, and make that survivable."
 </details>
@@ -230,7 +230,7 @@ the app never emits harmful content even if a jailbreak or hallucination produce
 <details><summary>▸ Answer</summary>
 
 No, and this was a real bug in this repo rather than a hypothetical. The squash
-keeps anything `str.isalnum()` accepts, and that is true for Cyrillic and
+keeps anything `str.isalnum()` accepts, and that's true for Cyrillic and
 fullwidth letters, so they pass through unchanged and the comparison fails on a
 passphrase that any human reads correctly.
 
@@ -243,35 +243,35 @@ and meaning are different problems that both get called "obfuscation".
 
 **Do.** `CONFUSABLES` in `guardrails/normalize.py` has a few dozen entries and the
 real Unicode table has thousands. What does `is_mixed_script` buy you that adding
-more entries does not?
+more entries doesn't?
 
 <details><summary>▸ Answer</summary>
 
-It catches the family as a class instead of one character at a time, so it does
-not depend on your table being complete. The cost is that it only works where
+It catches the family as a class instead of one character at a time, so it doesn't
+depend on your table being complete. The cost is that it only works where
 the text is supposed to be one script, and it has to run per word: a Greek
 quotation inside an English document is legitimate, while a single word built
-from two alphabets is not.
+from two alphabets isn't.
 </details>
 
 ---
 
 ## Section 13: delimiter forgery
 
-**Recall.** Section 5 said delimiters are a speed bump because you are asking a
-trickable model to police itself. There is a second failure underneath that one.
+**Recall.** Section 5 said delimiters are a speed bump because you're asking a
+trickable model to police itself. There's a second failure underneath that one.
 What is it, and why is only one of the two fixable?
 
 <details><summary>▸ Answer</summary>
 
-If the tag is a fixed string, the attacker does not have to argue with the model
+If the tag is a fixed string, the attacker doesn't have to argue with the model
 at all: they write `</untrusted_document>` inside the document, and everything
-after it reads as application text. That is impersonation rather than
+after it reads as application text. That's impersonation rather than
 persuasion.
 
-The persuasion half is a fact about models and you cannot fix it in your string
+The persuasion half is a fact about models and you can't fix it in your string
 handling. The impersonation half is a fact about your concatenation and you can:
-put a nonce in the tag, because a document written last week cannot carry digits
+put a nonce in the tag, because a document written last week can't carry digits
 generated at request time. Run `python examples/13_delimiter_forgery.py` to see
 both halves, including a politely-worded request that survives the fence intact
 because there was nothing forged to strip.
@@ -281,9 +281,9 @@ because there was nothing forged to strip.
 
 ## Section 14: the other end of the exfiltration channel
 
-**Recall.** `strip_exfil_links` removes markdown images and links to domains you do not
+**Recall.** `strip_exfil_links` removes markdown images and links to domains you don't
 control. Name the component that could have refused the request without reading the
-model's output at all, and what you would configure on it.
+model's output at all, and what you'd configure on it.
 
 <details><summary>▸ Answer</summary>
 
@@ -302,12 +302,12 @@ output check remains the only defense that travels with the text.
 
 ---
 
-## Section 15: the region you cannot fence
+## Section 15: the region you can't fence
 
 **Recall.** You wrap the untrusted document in a nonce tag and strip anything
 tag-shaped out of it, so the attacker can neither guess your delimiter nor forge
 one. Name the text in that prompt the nonce protects nothing about, and say why
-you could not have fenced it even if you had wanted to.
+you couldn't have fenced it even if you'd wanted to.
 
 <details><summary>▸ Answer</summary>
 
@@ -315,10 +315,10 @@ Everything outside the tags: the task line, the instructions, the identifiers.
 The nonce protects the boundary between the two regions and says nothing about
 what you yourself put on the trusted side of it.
 
-You could not have fenced it because of the ordering. The prompt is assembled
+You couldn't have fenced it because of the ordering. The prompt is assembled
 before the nonce exists, so the outer region is written first and by definition
-is not inside anything. That is not a flaw in the design, it is what a fence
-means: it marks a region, so there is always a region it does not mark.
+isn't inside anything. That isn't a flaw in the design, it's what a fence
+means: it marks a region, so there's always a region it doesn't mark.
 
 Which makes the fence worth exactly what your assembly keeps out of that region,
 and the failure looks like helpfulness rather than like an attack. A ticket
@@ -329,9 +329,9 @@ carry untrusted text across the boundary, and no string defense in this repo
 reports a problem, because nothing was forged.
 
 The rule is that identifiers your system minted are safe there and anything a
-user typed is not. The part worth copying is that the rule is testable.
+user typed isn't. The part worth copying is that the rule is testable.
 `unfenced_untrusted` asks which untrusted fields appear outside the fence and
-should always answer none. A comment saying the same thing is not a test, and
+should always answer none. A comment saying the same thing isn't a test, and
 writing one makes the claim less likely to be checked, because every later reader
 takes it as established.
 </details>
